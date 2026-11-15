@@ -11,10 +11,11 @@ public interface MesureRepository extends JpaRepository<Mesure, Long> {
 
     boolean existsByCodeAnalyse(String codeAnalyse);
 
+    // Le cast évite l'erreur PostgreSQL « could not determine data type of parameter » quand le filtre est absent.
     @Query("""
             select m from Mesure m join fetch m.parametre
             where m.station.code = :station
-              and (:parametre is null or m.parametre.code = :parametre)
+              and (cast(:parametre as String) is null or m.parametre.code = :parametre)
             order by m.datePrelevement desc
             """)
     List<Mesure> findHistorique(@Param("station") String codeStation,

@@ -2,7 +2,7 @@ spring:
   application:
     name: aquaveille
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/aquaveille?serverTimezone=Europe/Paris}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/aquaveille}
     username: ${DB_USER:aquaveille}
     password: ${DB_PASSWORD:aquaveille}
   jpa:

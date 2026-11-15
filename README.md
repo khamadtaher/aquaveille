@@ -27,14 +27,14 @@ Angular (carte, fiches, alertes)
 Spring Boot (API REST, import planifié) ──► API Hub'Eau
         │  JPA / Hibernate
         ▼
-MySQL (stations, paramètres, mesures) — schéma géré par Flyway
+PostgreSQL (stations, paramètres, mesures) — schéma géré par Flyway
 ```
 
 | Couche | Technologies |
 | --- | --- |
 | Front-end | Angular 21 (composants standalone, signals), TypeScript, RxJS, Leaflet, SCSS |
 | Back-end | Java 21, Spring Boot 3.5, Spring Web (RestClient), Spring Data JPA, Bean Validation, planification `@Scheduled` |
-| Base de données | MySQL 8, migrations Flyway |
+| Base de données | PostgreSQL 17, migrations Flyway |
 | Tests | JUnit 5, Mockito, MockMvc, H2 (back) · Vitest (front) |
 | Déploiement | Docker, Docker Compose, nginx |
 
@@ -77,11 +77,11 @@ Sur la carte, saisissez un département (ex. `91`) puis cliquez sur **Importer d
 
 ### Option 2 : en développement
 
-Prérequis : Java 21, Maven 3.9, Node.js 24 (ou 22.22.3 minimum), MySQL 8.
+Prérequis : Java 21, Maven 3.9, Node.js 24 (ou 22.22.3 minimum), PostgreSQL 17.
 
 ```bash
-# 1. Base de données (ou un MySQL local avec la base "aquaveille")
-docker compose up -d mysql
+# 1. Base de données (ou un PostgreSQL local avec la base "aquaveille")
+docker compose up -d postgres
 
 # 2. Back-end
 cd backend
@@ -101,7 +101,7 @@ Le front tourne sur http://localhost:4200 et redirige `/api` vers le back-end (`
 | --- | --- |
 | Front Angular | GitHub Pages, publié par GitHub Actions (`.github/workflows/deploy-frontend.yml`) |
 | API Spring Boot | Render, image Docker (`render.yaml`) |
-| Base MySQL | Aiven (offre gratuite) |
+| Base PostgreSQL | Aiven (offre gratuite) |
 
 Le front de la démo appelle l'API définie dans `frontend/src/environments/environment.github-pages.ts`.
 

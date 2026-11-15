@@ -1,24 +1,23 @@
 services:
-  mysql:
-    image: mysql:8.4
+  postgres:
+    image: postgres:17-alpine
     environment:
-      MYSQL_DATABASE: aquaveille
-      MYSQL_USER: aquaveille
-      MYSQL_PASSWORD: aquaveille
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: aquaveille
+      POSTGRES_USER: aquaveille
+      POSTGRES_PASSWORD: aquaveille
     ports:
-      - "3307:3306"
+      - "5432:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD-SHELL", "pg_isready -U aquaveille -d aquaveille"]
       interval: 5s
       retries: 20
 
   backend:
     build: ./backend
     environment:
-      DB_URL: jdbc:mysql://mysql:3306/aquaveille?serverTimezone=Europe/Paris
+      DB_URL: jdbc:postgresql://postgres:5432/aquaveille
       DB_USER: aquaveille
       DB_PASSWORD: aquaveille
       AQUAVEILLE_DEPARTEMENTS: "91"
@@ -26,7 +25,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
 
   frontend:
@@ -37,4 +36,4 @@ services:
       - backend
 
 volumes:
-  mysql-data:
+  postgres-data:

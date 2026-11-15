@@ -1,5 +1,5 @@
 # Déploiement de l'API Spring Boot sur Render (offre gratuite).
-# Les identifiants de la base MySQL sont saisis dans le tableau de bord Render (sync: false).
+# Les identifiants de la base PostgreSQL sont saisis dans le tableau de bord Render (sync: false).
 services:
   - type: web
     name: aquaveille-api
