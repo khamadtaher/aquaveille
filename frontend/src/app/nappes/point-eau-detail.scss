@@ -1,0 +1,20 @@
+.captage {
+  display: grid; gap: 12px; padding: 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+.captage h2 { margin: 0; font-size: 1.2rem; }
+
+.ouvrage { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 0; }
+.ouvrage dt { font-size: 0.8rem; color: var(--muted); }
+.ouvrage dd { margin: 0; font-weight: 600; }
+
+.verdict { margin: 0; padding: 10px 14px; border-radius: 8px; }
+.verdict.unique { background: var(--ok-soft); color: var(--ok); }
+.verdict.multi { background: #f1edfa; color: #4a3285; }
+.verdict.inconnu { background: var(--bg); color: var(--muted); }
+
+.entites { margin: 0; padding-left: 1.4rem; display: grid; gap: 4px; }
+.code-entite { font: 500 0.8rem/1 var(--mono); color: var(--muted); margin-right: 6px; }
+
+.liens { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.liens a { color: var(--accent); }

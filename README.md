@@ -1,6 +1,6 @@
 # AquaVeille
 
-Application web de suivi de la qualité des cours d'eau en France, à partir des données publiques [Hub'Eau](https://hubeau.eaufrance.fr) (API « Qualité des cours d'eau »).
+Application web de suivi de la qualité des cours d'eau et des eaux souterraines en France, à partir des données publiques [Hub'Eau](https://hubeau.eaufrance.fr) (API « Qualité des cours d'eau », données Naïades, et API « Qualité des nappes d'eau souterraine », données ADES).
 
 L'application importe les stations de mesure et les analyses physico-chimiques d'un département, détecte les dépassements de seuils (nitrates, oxygène dissous, pH…) et les affiche sur une carte interactive.
 
@@ -16,7 +16,9 @@ L'application importe les stations de mesure et les analyses physico-chimiques d
 - **Import à la demande** depuis Hub'Eau, plus un import automatique chaque nuit.
 - **Fiche station** : dernière valeur de chaque paramètre suivi, seuils, historique filtrable.
 - **Liste des alertes** : tous les dépassements des 12 derniers mois.
-- **Seuils configurables** en base de données (table `parametre`).
+- **Eaux souterraines** : carte des forages, puits et sources (données ADES), avec pour chaque point la nature de l'ouvrage, sa profondeur, le mode de gisement, la masse d'eau et les **entités hydrogéologiques BDLISA** rattachées.
+- **Nappe captée** : un point rattaché à une seule entité BDLISA est signalé « nappe unique » ; un forage multicouche est signalé comme tel, Hub'Eau ne permettant pas de savoir de quelle nappe provient chaque prélèvement (la coupe technique est à consulter dans la Banque du sous-sol du BRGM).
+- **Seuils configurables** en base de données (table `parametre`), distincts pour les cours d'eau et les nappes.
 
 ## Architecture
 
@@ -48,6 +50,10 @@ PostgreSQL (stations, paramètres, mesures) — schéma géré par Flyway
 | GET | `/api/parametres` | Paramètres suivis et seuils |
 | GET | `/api/alertes?jours=365` | Dépassements de seuil récents |
 | POST | `/api/import/{departement}` | Lance l'import d'un département depuis Hub'Eau |
+| GET | `/api/nappes/points?departement=91` | Points d'eau souterraine, avec nappes BDLISA et indicateur d'alerte |
+| GET | `/api/nappes/points/{bssId}` | Détail d'un point d'eau |
+| GET | `/api/nappes/points/{bssId}/mesures?parametre=1340` | Historique des mesures d'un point d'eau |
+| POST | `/api/nappes/import/{departement}` | Lance l'import des eaux souterraines d'un département |
 
 ## Paramètres suivis
 
@@ -59,6 +65,8 @@ PostgreSQL (stations, paramètres, mesures) — schéma géré par Flyway
 | 1335 | Ammonium | > 0,5 mg/L |
 | 1340 | Nitrates | > 50 mg/L |
 | 1433 | Orthophosphates | > 0,5 mg/L |
+
+Pour les eaux souterraines, seuls les nitrates (> 50 mg/L) et l'ammonium (> 0,5 mg/L) déclenchent une alerte (colonnes `seuil_min_nappe` / `seuil_max_nappe`, migration `V3__eaux_souterraines.sql`).
 
 Seuils indicatifs, modifiables dans `backend/src/main/resources/db/migration/V2__parametres_suivis.sql` ou directement en base.
 

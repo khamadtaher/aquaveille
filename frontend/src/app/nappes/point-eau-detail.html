@@ -1,0 +1,115 @@
+<a routerLink="/nappes" class="retour">← Retour à la carte des eaux souterraines</a>
+
+@if (erreur(); as e) {
+  <p class="message erreur">{{ e }}</p>
+}
+
+@if (point(); as p) {
+  <header class="entete">
+    <span class="code">Point d'eau BSS {{ p.codeBss ?? p.bssId }}</span>
+    <h1>{{ p.libelle ?? (p.nature ?? "Point d'eau") + ' de ' + (p.commune ?? '?') }}</h1>
+    <p>{{ p.commune }} ({{ p.codeDepartement }})</p>
+    @if (p.enAlerte) {
+      <span class="badge ko">Dépassement sur les 12 derniers mois</span>
+    } @else {
+      <span class="badge ok">Aucun dépassement sur les 12 derniers mois</span>
+    }
+  </header>
+
+  <section class="captage" aria-label="Ouvrage et nappes">
+    <h2>Ouvrage et nappe(s) captée(s)</h2>
+
+    <dl class="ouvrage">
+      <div><dt>Nature</dt><dd>{{ p.nature ?? 'Non renseignée' }}</dd></div>
+      <div>
+        <dt>Profondeur</dt>
+        <dd>{{ p.profondeur != null ? (p.profondeur | number: '1.0-1') + ' m' : 'Non renseignée' }}</dd>
+      </div>
+      <div><dt>Mode de gisement</dt><dd>{{ p.modeGisement ?? 'Non renseigné' }}</dd></div>
+      <div>
+        <dt>Masse(s) d'eau</dt>
+        <dd>{{ p.massesEau.length ? p.massesEau.join(' ; ') : 'Non renseignée' }}</dd>
+      </div>
+    </dl>
+
+    @if (p.entites.length === 0) {
+      <p class="verdict inconnu">
+        Aucune entité hydrogéologique (BDLISA) n'est rattachée à ce point : la nappe captée n'est pas renseignée.
+      </p>
+    } @else if (p.nappeUnique) {
+      <p class="verdict unique">
+        <strong>Nappe unique :</strong> les analyses concernent l'entité
+        <strong>{{ p.entites[0].nom ?? p.entites[0].code }}</strong> ({{ p.entites[0].code }}).
+      </p>
+    } @else {
+      <p class="verdict multi">
+        <strong>Forage multicouche :</strong> ce point est rattaché à {{ p.entites.length }} entités hydrogéologiques.
+        Hub'Eau ne précise pas de quelle nappe provient chaque prélèvement : il faut consulter la coupe
+        technique du forage (profondeur des crépines) dans la Banque du sous-sol du BRGM.
+      </p>
+    }
+
+    @if (p.entites.length > 0) {
+      <ol class="entites">
+        @for (e of p.entites; track e.code) {
+          <li><span class="code-entite">{{ e.code }}</span> {{ e.nom }}</li>
+        }
+      </ol>
+    }
+
+    <p class="liens">
+      @if (p.urnBss) {
+        <a [href]="p.urnBss" target="_blank" rel="noopener">Fiche ADES du point</a> ·
+      }
+      <a href="https://infoterre.brgm.fr/" target="_blank" rel="noopener">InfoTerre (BRGM)</a> :
+      rechercher le code <code>{{ p.codeBss ?? p.bssId }}</code> pour la coupe géologique et technique.
+    </p>
+  </section>
+
+  <section class="tuiles" aria-label="Dernières valeurs">
+    @for (d of dernieres(); track d.parametre.code) {
+      <article class="tuile" [class.hors]="d.mesure?.horsSeuil">
+        <span class="nom">{{ d.parametre.libelle }}</span>
+        @if (d.mesure; as m) {
+          <span class="valeur">{{ m.valeur | number: '1.0-2' }} <small>{{ m.unite }}</small></span>
+          <span class="date">{{ m.date | date: 'dd/MM/yyyy' }}</span>
+        }
+        <span class="seuil">Seuil {{ formatSeuil(d.parametre.seuilMinNappe, d.parametre.seuilMaxNappe) }}</span>
+      </article>
+    }
+  </section>
+
+  <section class="historique">
+    <div class="titre">
+      <h2>Historique des mesures</h2>
+      <label for="filtre">Paramètre</label>
+      <select id="filtre" [ngModel]="filtre()" (ngModelChange)="filtre.set($event)">
+        <option value="">Tous</option>
+        @for (d of dernieres(); track d.parametre.code) {
+          <option [value]="d.parametre.code">{{ d.parametre.libelle }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Paramètre</th><th class="num">Valeur</th><th>Unité</th><th>État</th></tr>
+        </thead>
+        <tbody>
+          @for (m of mesuresFiltrees(); track $index) {
+            <tr [class.hors]="m.horsSeuil">
+              <td>{{ m.date | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ m.parametre }}</td>
+              <td class="num">{{ m.valeur | number: '1.0-2' }}</td>
+              <td>{{ m.unite }}</td>
+              <td>{{ m.horsSeuil ? 'Hors seuil' : 'Conforme' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="vide">Aucune mesure importée pour ce point.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

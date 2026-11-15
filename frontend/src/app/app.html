@@ -1,7 +1,8 @@
 <header class="entete">
   <a routerLink="/" class="marque">AquaVeille</a>
   <nav>
-    <a routerLink="/" routerLinkActive="actif" [routerLinkActiveOptions]="{ exact: true }">Carte</a>
+    <a routerLink="/" routerLinkActive="actif" [routerLinkActiveOptions]="{ exact: true }">Cours d'eau</a>
+    <a routerLink="/nappes" routerLinkActive="actif">Eaux souterraines</a>
     <a routerLink="/alertes" routerLinkActive="actif">Alertes</a>
   </nav>
 </header>
@@ -12,5 +13,5 @@
 
 <footer>
   Données : <a href="https://hubeau.eaufrance.fr" target="_blank" rel="noopener">Hub'Eau</a>
-  (qualité des cours d'eau) · Fond de carte © OpenStreetMap
+  (qualité des cours d'eau et des nappes, données Naïades et ADES) · Fond de carte © OpenStreetMap
 </footer>

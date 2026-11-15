@@ -16,7 +16,7 @@ describe('App', () => {
     await fixture.whenStable();
     const html = fixture.nativeElement as HTMLElement;
     expect(html.querySelector('.marque')?.textContent).toContain('AquaVeille');
-    expect(html.querySelectorAll('nav a').length).toBe(2);
+    expect(html.querySelectorAll('nav a').length).toBe(3);
   });
 });
 

@@ -54,6 +54,33 @@ public class HubEauClient {
         return toutesLesPages(url, new ParameterizedTypeReference<HubEauPage<HubEauAnalyse>>() { });
     }
 
+    private static final String CHAMPS_POINT_EAU =
+            "bss_id,code_bss,libelle_pe,nom_commune,num_departement,latitude,longitude,nom_nature_pe,"
+                    + "profondeur_investigation,nom_caracteristique_aquifere,nom_mode_gisement,"
+                    + "codes_entite_hg_bdlisa,noms_entite_hg_bdlisa,noms_masse_eau_edl,urn_bss";
+    private static final String CHAMPS_ANALYSE_NAPPE = "bss_id,code_param,date_debut_prelevement,resultat";
+
+    /** Points d'eau souterraine d'un département (API « Qualité des nappes d'eau souterraine »). */
+    public List<HubEauPointEau> pointsEauDuDepartement(String codeDepartement) {
+        return toutesLesPages(
+                "/api/v1/qualite_nappes/stations?num_departement=" + codeDepartement
+                        + "&fields=" + CHAMPS_POINT_EAU + "&size=" + TAILLE_PAGE,
+                new ParameterizedTypeReference<HubEauPage<HubEauPointEau>>() { });
+    }
+
+    /** Analyses d'eaux souterraines d'un département pour les paramètres suivis, depuis une date. */
+    public List<HubEauAnalyseNappe> analysesNappesDuDepartement(String codeDepartement,
+                                                               Collection<String> codesParametres,
+                                                               LocalDate depuis) {
+        String url = "/api/v1/qualite_nappes/analyses"
+                + "?num_departement=" + codeDepartement
+                + "&code_param=" + String.join(",", codesParametres)
+                + "&date_debut_prelevement=" + depuis
+                + "&fields=" + CHAMPS_ANALYSE_NAPPE
+                + "&size=" + TAILLE_PAGE;
+        return toutesLesPages(url, new ParameterizedTypeReference<HubEauPage<HubEauAnalyseNappe>>() { });
+    }
+
     /** Parcourt les pages en suivant le lien "next" fourni par l'API. */
     private <T> List<T> toutesLesPages(String premiereUrl,
                                        ParameterizedTypeReference<HubEauPage<T>> type) {

@@ -20,3 +20,5 @@
 .point { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; }
 .point.ok { background: #2bb3c0; border-color: #0f6d7a; }
 .point.ko { background: #f04438; border-color: #b42318; margin-left: 8px; }
+.point.nappe { background: #9b87d6; border-color: #5b3fa0; }
+.point.nappe.multi { border-style: dashed; margin-left: 8px; }
