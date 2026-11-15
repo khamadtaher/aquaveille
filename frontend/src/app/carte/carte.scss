@@ -1,0 +1,22 @@
+:host { display: grid; gap: 12px; }
+
+.barre {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; justify-content: space-between;
+}
+.filtre { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filtre input { width: 4.5rem; }
+
+.compteurs { display: flex; gap: 16px; color: var(--muted); }
+.compteurs strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.compteurs .alerte strong { color: var(--danger); }
+
+.carte {
+  height: min(70vh, 640px); min-height: 360px;
+  border: 1px solid var(--line); border-radius: 10px;
+}
+
+.legende { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--muted); font-size: 0.9rem; }
+.point { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; }
+.point.ok { background: #2bb3c0; border-color: #0f6d7a; }
+.point.ko { background: #f04438; border-color: #b42318; margin-left: 8px; }

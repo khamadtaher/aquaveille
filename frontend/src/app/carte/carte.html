@@ -1,0 +1,33 @@
+<section class="barre">
+  <form class="filtre" (ngSubmit)="charger()">
+    <label for="departement">Département</label>
+    <input id="departement" name="departement" [(ngModel)]="departement" maxlength="3" required />
+    <button type="submit" class="secondaire">Afficher</button>
+    <button type="button" (click)="importer()" [disabled]="chargement()">
+      {{ chargement() ? 'Import en cours…' : "Importer depuis Hub'Eau" }}
+    </button>
+  </form>
+
+  <div class="compteurs">
+    <span><strong>{{ stations().length }}</strong> stations</span>
+    <span class="alerte"><strong>{{ nbAlertes() }}</strong> en alerte</span>
+  </div>
+</section>
+
+@if (rapport(); as r) {
+  <p class="message succes">
+    Import du {{ r.departement }} terminé : {{ r.stations }} stations,
+    {{ r.nouvellesMesures }} nouvelles mesures, {{ r.depassements }} dépassements.
+  </p>
+}
+@if (erreur(); as e) {
+  <p class="message erreur">{{ e }}</p>
+}
+
+<div #carte class="carte" aria-label="Carte des stations de mesure"></div>
+
+<p class="legende">
+  <span class="point ok"></span> Station conforme
+  <span class="point ko"></span> Dépassement de seuil sur les 12 derniers mois
+  — cliquez sur une station pour voir ses mesures.
+</p>

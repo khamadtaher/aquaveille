@@ -1,0 +1,35 @@
+CREATE TABLE station (
+    code             VARCHAR(20)  NOT NULL PRIMARY KEY,
+    libelle          VARCHAR(255) NOT NULL,
+    commune          VARCHAR(255),
+    code_departement VARCHAR(3),
+    cours_eau        VARCHAR(255),
+    latitude         DOUBLE       NOT NULL,
+    longitude        DOUBLE       NOT NULL
+);
+
+CREATE INDEX idx_station_departement ON station (code_departement);
+
+CREATE TABLE parametre (
+    code      VARCHAR(10)  NOT NULL PRIMARY KEY,
+    libelle   VARCHAR(255) NOT NULL,
+    unite     VARCHAR(50)  NOT NULL,
+    seuil_min DOUBLE,
+    seuil_max DOUBLE
+);
+
+CREATE TABLE mesure (
+    id               BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    code_analyse     VARCHAR(40)  NOT NULL,
+    station_code     VARCHAR(20)  NOT NULL,
+    parametre_code   VARCHAR(10)  NOT NULL,
+    date_prelevement DATE         NOT NULL,
+    valeur           DOUBLE       NOT NULL,
+    hors_seuil       BOOLEAN      NOT NULL,
+    CONSTRAINT uk_mesure_analyse UNIQUE (code_analyse),
+    CONSTRAINT fk_mesure_station FOREIGN KEY (station_code) REFERENCES station (code),
+    CONSTRAINT fk_mesure_parametre FOREIGN KEY (parametre_code) REFERENCES parametre (code)
+);
+
+CREATE INDEX idx_mesure_station_date ON mesure (station_code, date_prelevement);
+CREATE INDEX idx_mesure_alerte ON mesure (hors_seuil, date_prelevement);

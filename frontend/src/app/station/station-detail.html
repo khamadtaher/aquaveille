@@ -1,0 +1,67 @@
+<a routerLink="/" class="retour">← Retour à la carte</a>
+
+@if (erreur(); as e) {
+  <p class="message erreur">{{ e }}</p>
+}
+
+@if (station(); as s) {
+  <header class="entete">
+    <span class="code">Station {{ s.code }}</span>
+    <h1>{{ s.libelle }}</h1>
+    <p>{{ s.coursEau }} · {{ s.commune }} ({{ s.codeDepartement }})</p>
+    @if (s.enAlerte) {
+      <span class="badge ko">Dépassement sur les 12 derniers mois</span>
+    } @else {
+      <span class="badge ok">Aucun dépassement sur les 12 derniers mois</span>
+    }
+  </header>
+
+  <section class="tuiles" aria-label="Dernières valeurs">
+    @for (d of dernieres(); track d.parametre.code) {
+      <article class="tuile" [class.hors]="d.mesure?.horsSeuil">
+        <span class="nom">{{ d.parametre.libelle }}</span>
+        @if (d.mesure; as m) {
+          <span class="valeur">{{ m.valeur | number: '1.0-2' }} <small>{{ m.unite }}</small></span>
+          <span class="date">{{ m.date | date: 'dd/MM/yyyy' }}</span>
+        } @else {
+          <span class="valeur vide">Pas de mesure</span>
+        }
+        <span class="seuil">Seuil {{ formatSeuil(d.parametre.seuilMin, d.parametre.seuilMax) }}</span>
+      </article>
+    }
+  </section>
+
+  <section class="historique">
+    <div class="titre">
+      <h2>Historique des mesures</h2>
+      <label for="filtre">Paramètre</label>
+      <select id="filtre" [ngModel]="filtre()" (ngModelChange)="filtre.set($event)">
+        <option value="">Tous</option>
+        @for (p of parametres(); track p.code) {
+          <option [value]="p.code">{{ p.libelle }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Paramètre</th><th class="num">Valeur</th><th>Unité</th><th>État</th></tr>
+        </thead>
+        <tbody>
+          @for (m of mesuresFiltrees(); track $index) {
+            <tr [class.hors]="m.horsSeuil">
+              <td>{{ m.date | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ m.parametre }}</td>
+              <td class="num">{{ m.valeur | number: '1.0-2' }}</td>
+              <td>{{ m.unite }}</td>
+              <td>{{ m.horsSeuil ? 'Hors seuil' : 'Conforme' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="vide">Aucune mesure importée pour cette station.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

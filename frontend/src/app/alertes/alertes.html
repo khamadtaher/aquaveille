@@ -1,0 +1,31 @@
+<h1>Dépassements de seuil</h1>
+<p class="intro">Mesures hors des seuils d'alerte sur les 12 derniers mois, les plus récentes en premier.</p>
+
+@if (erreur(); as e) {
+  <p class="message erreur">{{ e }}</p>
+}
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Station</th><th>Commune</th><th>Paramètre</th>
+        <th class="num">Valeur</th><th>Seuil</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of alertes(); track $index) {
+        <tr>
+          <td>{{ a.date | date: 'dd/MM/yyyy' }}</td>
+          <td><a [routerLink]="['/stations', a.codeStation]">{{ a.station }}</a></td>
+          <td>{{ a.commune }}</td>
+          <td>{{ a.parametre }}</td>
+          <td class="num">{{ a.valeur | number: '1.0-2' }} {{ a.unite }}</td>
+          <td>{{ formatSeuil(a.seuilMin, a.seuilMax) }}</td>
+        </tr>
+      } @empty {
+        <tr><td colspan="6" class="vide">Aucun dépassement. Importez un département depuis la carte.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

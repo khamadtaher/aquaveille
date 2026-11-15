@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: aquaveille
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/aquaveille?serverTimezone=Europe/Paris}
+    username: ${DB_USER:aquaveille}
+    password: ${DB_PASSWORD:aquaveille}
+  jpa:
+    hibernate:
+      ddl-auto: none       # le schéma est géré par Flyway
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}   # Render fournit le port via la variable PORT
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+aquaveille:
+  hubeau-base-url: https://hubeau.eaufrance.fr
+  departements: ${AQUAVEILLE_DEPARTEMENTS:91}
+  historique-jours: 1095        # 3 ans d'analyses
+  import-cron: "0 0 3 * * *"    # chaque nuit à 3 h
+  cors-origins: ${CORS_ORIGINS:http://localhost:4200}

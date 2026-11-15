@@ -1,0 +1,16 @@
+<header class="entete">
+  <a routerLink="/" class="marque">AquaVeille</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="actif" [routerLinkActiveOptions]="{ exact: true }">Carte</a>
+    <a routerLink="/alertes" routerLinkActive="actif">Alertes</a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer>
+  Données : <a href="https://hubeau.eaufrance.fr" target="_blank" rel="noopener">Hub'Eau</a>
+  (qualité des cours d'eau) · Fond de carte © OpenStreetMap
+</footer>

@@ -1,0 +1,14 @@
+:host { display: flex; flex-direction: column; min-height: 100vh; }
+
+.entete {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 20px; background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.marque { font-weight: 800; font-size: 1.2rem; color: var(--accent); text-decoration: none; letter-spacing: -0.01em; }
+nav { display: flex; gap: 4px; }
+nav a { padding: 6px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-weight: 500; }
+nav a.actif { background: var(--accent-soft); color: var(--accent); }
+
+main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+footer { padding: 16px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); }
+footer a { color: var(--accent); }

@@ -1,0 +1,22 @@
+# Déploiement de l'API Spring Boot sur Render (offre gratuite).
+# Les identifiants de la base MySQL sont saisis dans le tableau de bord Render (sync: false).
+services:
+  - type: web
+    name: aquaveille-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://khamadtaher.github.io
+      - key: AQUAVEILLE_DEPARTEMENTS
+        value: "91"
